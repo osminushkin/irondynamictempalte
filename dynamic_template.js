@@ -23,7 +23,7 @@ var typeOf = function (value) {
  *
  */
 DynamicTemplate = function (options) {
-  this._id = Random.id(); 
+  this._id = Random.id();
   this.options = options = options || {};
   this._template = options.template;
   this._defaultTemplate = options.defaultTemplate;
@@ -463,10 +463,12 @@ DynamicTemplate.getParentDataContext = function (view) {
  */
 DynamicTemplate.getDataContext = function (view) {
   while (view) {
-    if (view.name === 'with' && !view.__isTemplateWith)
-      return view.dataVar.get();
-    else
+    if (view.name === 'with' && !view.__isTemplateWith) {
+      var d = view.dataVar.get();
+      return (d && d.value) || d;
+    } else {
       view = view.parentView;
+    }
   }
 
   return null;
@@ -489,8 +491,10 @@ DynamicTemplate.getInclusionArguments = function (view) {
   if (!parent)
     return null;
 
-  if (parent.__isTemplateWith)
-    return parent.dataVar.get();
+  if (parent.__isTemplateWith) {
+    var d = parent.dataVar.get();
+    return (d && d.value) || d;
+  }
 
   return null;
 };
@@ -562,8 +566,8 @@ DynamicTemplate.findLookupHostWithProperty = function (view, key) {
       if (host && get(host, key)) {
         return host;
       }
-    } 
-    
+    }
+
     view = view.parentView;
   }
 
@@ -587,8 +591,8 @@ DynamicTemplate.findLookupHostWithHelper = function (view, helperKey) {
       if (host && get(host, 'constructor', '_helpers', helperKey)) {
         return host;
       }
-    } 
-    
+    }
+
     view = view.parentView;
   }
 
